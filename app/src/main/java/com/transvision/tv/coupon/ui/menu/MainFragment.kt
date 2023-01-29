@@ -1,47 +1,40 @@
 package com.transvision.tv.coupon.ui.menu
 
-import java.util.Timer
-import java.util.TimerTask
-
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.leanback.app.BackgroundManager
-import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.ImageCardView
-import androidx.leanback.widget.ListRow
-import androidx.leanback.widget.OnItemViewClickedListener
-import androidx.leanback.widget.OnItemViewSelectedListener
-import androidx.leanback.widget.Presenter
-import androidx.leanback.widget.Row
-import androidx.leanback.widget.RowPresenter
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
+import androidx.leanback.app.BackgroundManager
+import androidx.leanback.app.BrowseSupportFragment
+import androidx.leanback.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.transvision.test.sampletv.tv.model.Coupon
-import com.transvision.tv.coupon.*
+import com.transvision.tv.coupon.BrowseErrorActivity
+import com.transvision.tv.coupon.R
 import com.transvision.tv.coupon.extension.CustomRowPresenter
 import com.transvision.tv.coupon.extension.IconHeaderItem
 import com.transvision.tv.coupon.ui.coupon.CouponActivity
+import org.koin.android.ext.android.inject
+import java.util.*
 
 /**
  * Loads a grid of cards with coupon to browse.
  */
-class MainFragment : BrowseSupportFragment() {
+class MainFragment() : BrowseSupportFragment() {
 
+    private val viewModel: MenuViewModel by inject()
     private val mHandler = Handler(Looper.myLooper()!!)
     private lateinit var mBackgroundManager: BackgroundManager
     private var mDefaultBackground: Drawable? = null
@@ -70,26 +63,27 @@ class MainFragment : BrowseSupportFragment() {
     private fun prepareBackgroundManager() {
 
         mBackgroundManager = BackgroundManager.getInstance(activity)
-        mBackgroundManager.attach(activity!!.window)
-        mDefaultBackground = ContextCompat.getDrawable(context!!, R.drawable.default_background)
+        mBackgroundManager.attach(requireActivity().window)
+        mDefaultBackground = ContextCompat.getDrawable(requireContext(), R.drawable.default_background)
         mMetrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(mMetrics)
+        requireActivity().windowManager.defaultDisplay.getMetrics(mMetrics)
     }
 
     private fun setupUIElements() {
-        title = getString(R.string.coupon)
+//        title = getString(R.string.coupon)
+
         // over title
-        headersState = BrowseSupportFragment.HEADERS_ENABLED
+        showTitle(false)
+        headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
 
         // set fastLane (or headers) background color
-        brandColor = ContextCompat.getColor(context!!, R.color.fastlane_background)
+        brandColor = ContextCompat.getColor(requireContext(), R.color.black)
         // set search icon color
-        searchAffordanceColor = ContextCompat.getColor(context!!, R.color.search_opaque)
+        searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.search_opaque)
     }
 
     private fun loadRows() {
-        val viewModel = MenuViewModel(context!!)
         viewModel.loadData()
         viewModel.browseCoupon.observe(viewLifecycleOwner) { list ->
 
@@ -114,15 +108,6 @@ class MainFragment : BrowseSupportFragment() {
                 }
             }
 
-//            val gridHeader = HeaderItem(viewModel.listCategory.size.toLong(), "PREFERENCES")
-//
-//            val mGridPresenter = GridItemPresenter()
-//            val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
-//            gridRowAdapter.add(resources.getString(R.string.grid_view))
-//            gridRowAdapter.add(getString(R.string.error_fragment))
-//            gridRowAdapter.add(resources.getString(R.string.personal_settings))
-//            rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
-
             adapter = rowsAdapter
 
         }
@@ -130,7 +115,7 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun setupEventListeners() {
         setOnSearchClickedListener {
-            Toast.makeText(context!!, "Implement your own in-app search", Toast.LENGTH_LONG)
+            Toast.makeText(requireContext(), "Implement your own in-app search", Toast.LENGTH_LONG)
                 .show()
         }
 
@@ -182,7 +167,7 @@ class MainFragment : BrowseSupportFragment() {
     private fun updateBackground(uri: String?) {
         val width = mMetrics.widthPixels
         val height = mMetrics.heightPixels
-        Glide.with(context!!)
+        Glide.with(requireContext())
             .load(uri)
             .centerCrop()
             .error(mDefaultBackground)

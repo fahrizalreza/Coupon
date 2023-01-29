@@ -18,24 +18,26 @@ import kotlin.properties.Delegates
  */
 class CardPresenter : Presenter() {
     private var mDefaultCardImage: Drawable? = null
-    private var sSelectedBackgroundColor: Int by Delegates.notNull()
+//    private var sSelectedBackgroundColor: Int by Delegates.notNull()
     private var sDefaultBackgroundColor: Int by Delegates.notNull()
 
     override fun onCreateViewHolder(parent: ViewGroup): Presenter.ViewHolder {
         Log.d(TAG, "onCreateViewHolder")
 
-        sDefaultBackgroundColor = ContextCompat.getColor(parent.context, R.color.default_background)
-        sSelectedBackgroundColor =
-            ContextCompat.getColor(parent.context, R.color.selected_background)
+        sDefaultBackgroundColor = ContextCompat.getColor(parent.context, R.color.black)
+//        sSelectedBackgroundColor =
+//            ContextCompat.getColor(parent.context, R.color.selected_background)
         mDefaultCardImage = ContextCompat.getDrawable(parent.context, R.drawable.movie)
+
 
         val cardView = object : ImageCardView(parent.context) {
             override fun setSelected(selected: Boolean) {
+                infoVisibility = 1
                 updateCardBackgroundColor(this, selected)
                 super.setSelected(selected)
             }
         }
-
+        cardView.infoVisibility = 1
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
         updateCardBackgroundColor(cardView, false)
@@ -47,9 +49,8 @@ class CardPresenter : Presenter() {
         val cardView = viewHolder.view as ImageCardView
 
         Log.d(TAG, "onBindViewHolder")
+        cardView.infoVisibility = 1
         if (coupon.icon != null) {
-            cardView.titleText = coupon.brand
-            cardView.contentText = coupon.name
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
             Glide.with(viewHolder.view.context)
                 .load(coupon.icon)
@@ -63,16 +64,17 @@ class CardPresenter : Presenter() {
         Log.d(TAG, "onUnbindViewHolder")
         val cardView = viewHolder.view as ImageCardView
         // Remove references to images so that the garbage collector can free up memory
+        cardView.infoVisibility = 1
         cardView.badgeImage = null
         cardView.mainImage = null
     }
 
     private fun updateCardBackgroundColor(view: ImageCardView, selected: Boolean) {
-        val color = if (selected) sSelectedBackgroundColor else sDefaultBackgroundColor
+//        val color = if (selected) sSelectedBackgroundColor else sDefaultBackgroundColor
         // Both background colors should be set because the view"s background is temporarily visible
         // during animations.
-        view.setBackgroundColor(color)
-        view.setInfoAreaBackgroundColor(color)
+//        view.setBackgroundColor(color)
+//        view.setInfoAreaBackgroundColor(color)
     }
 
     companion object {

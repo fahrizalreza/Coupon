@@ -10,14 +10,12 @@ import com.transvision.test.sampletv.tv.model.CouponResponse
 import com.transvision.tv.coupon.extension.RepositoryExtension.applySchedulers
 import com.transvision.tv.coupon.model.Category
 import com.transvision.tv.coupon.service.ApiService
-import com.transvision.tv.coupon.service.connect
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
-class MenuViewModel(context: Context): ViewModel() {
+class MenuViewModel(private val apiService: ApiService,  context: Context): ViewModel() {
     private lateinit var call: Single<CouponResponse>
     private lateinit var callCategory: Single<CategoryResponse>
-    private val apiService: ApiService = connect(context)
     private val compositeDisposable = CompositeDisposable()
     private lateinit var list: List<Coupon>
     var listCategory: MutableList<Category> = mutableListOf()
