@@ -38,7 +38,7 @@ import com.transvision.tv.coupon.extension.IconHeaderItem
 import com.transvision.tv.coupon.ui.coupon.CouponActivity
 
 /**
- * Loads a grid of cards with movies to browse.
+ * Loads a grid of cards with coupon to browse.
  */
 class MainFragment : BrowseSupportFragment() {
 
@@ -50,7 +50,6 @@ class MainFragment : BrowseSupportFragment() {
     private var mBackgroundUri: String? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        Log.i(TAG, "onCreate")
         super.onActivityCreated(savedInstanceState)
 
         prepareBackgroundManager()
@@ -78,7 +77,7 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun setupUIElements() {
-        title = getString(R.string.browse_title)
+        title = getString(R.string.coupon)
         // over title
         headersState = BrowseSupportFragment.HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true

@@ -8,7 +8,6 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.RowHeaderPresenter
 import androidx.leanback.widget.RowHeaderView
 import com.transvision.tv.coupon.R
-import com.transvision.tv.coupon.extension.IconHeaderItem
 
 class CustomRowHeaderPresenter: RowHeaderPresenter() {
 
