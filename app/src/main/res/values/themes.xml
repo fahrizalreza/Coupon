@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.Coupon" parent="@style/Theme.Leanback" />
+</resources>
