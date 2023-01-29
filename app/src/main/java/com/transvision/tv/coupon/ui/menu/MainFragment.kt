@@ -1,4 +1,4 @@
-package com.transvision.tv.coupon
+package com.transvision.tv.coupon.ui.menu
 
 import java.util.Collections
 import java.util.Timer
@@ -34,6 +34,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.transvision.tv.coupon.*
 
 /**
  * Loads a grid of cards with movies to browse.

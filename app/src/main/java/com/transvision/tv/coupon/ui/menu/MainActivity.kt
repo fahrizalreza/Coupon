@@ -1,7 +1,8 @@
-package com.transvision.tv.coupon
+package com.transvision.tv.coupon.ui.menu
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import com.transvision.tv.coupon.R
 
 /**
  * Loads [MainFragment].

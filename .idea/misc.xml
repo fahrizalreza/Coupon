@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/holder_coupon.xml" value="0.115" />
+        <entry key="app/src/main/res/layout/activity_coupon.xml" value="0.13229166666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2703804347826087" />
       </map>
     </option>

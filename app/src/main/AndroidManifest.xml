@@ -14,17 +14,18 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_coupon"
         android:label="@string/app_name"
+        android:banner="@mipmap/ic_app_banner"
         android:supportsRtl="true"
+        android:roundIcon="@mipmap/ic_launcher_coupon_round"
         android:theme="@style/Theme.Coupon">
         <activity
-            android:name=".MainActivity"
-            android:banner="@drawable/app_icon_your_company"
+            android:name=".ui.menu.MainActivity"
             android:exported="true"
-            android:icon="@drawable/app_icon_your_company"
+            android:icon="@mipmap/ic_launcher_coupon_round"
             android:label="@string/app_name"
-            android:logo="@drawable/app_icon_your_company"
+            android:logo="@mipmap/ic_launcher_coupon_round"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +33,10 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.coupon.CouponActivity"
+            android:exported="false" />
         <activity
             android:name=".DetailsActivity"
             android:exported="false" />
