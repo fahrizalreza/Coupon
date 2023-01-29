@@ -36,6 +36,7 @@ class CouponActivity : FragmentActivity() {
     }
 
     companion object {
+        const val COUPON_ACTIVITY= "CouponActivity"
         const val COUPON = "Coupon"
     }
 }

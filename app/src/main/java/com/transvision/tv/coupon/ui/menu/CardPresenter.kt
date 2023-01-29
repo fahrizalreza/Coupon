@@ -1,4 +1,4 @@
-package com.transvision.tv.coupon
+package com.transvision.tv.coupon.ui.menu
 
 import android.graphics.drawable.Drawable
 import androidx.leanback.widget.ImageCardView
@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.ViewGroup
 
 import com.bumptech.glide.Glide
+import com.transvision.test.sampletv.tv.model.Coupon
+import com.transvision.tv.coupon.R
 import kotlin.properties.Delegates
 
 /**
@@ -41,16 +43,16 @@ class CardPresenter : Presenter() {
     }
 
     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
-        val movie = item as Movie
+        val coupon = item as Coupon
         val cardView = viewHolder.view as ImageCardView
 
         Log.d(TAG, "onBindViewHolder")
-        if (movie.cardImageUrl != null) {
-            cardView.titleText = movie.title
-            cardView.contentText = movie.studio
+        if (coupon.icon != null) {
+            cardView.titleText = coupon.brand
+            cardView.contentText = coupon.name
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
             Glide.with(viewHolder.view.context)
-                .load(movie.cardImageUrl)
+                .load(coupon.icon)
                 .centerCrop()
                 .error(mDefaultCardImage)
                 .into(cardView.mainImageView)

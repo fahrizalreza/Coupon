@@ -1,6 +1,5 @@
 package com.transvision.tv.coupon.ui.menu
 
-import java.util.Collections
 import java.util.Timer
 import java.util.TimerTask
 
@@ -13,10 +12,8 @@ import android.os.Looper
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.ListRow
-import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.OnItemViewClickedListener
 import androidx.leanback.widget.OnItemViewSelectedListener
 import androidx.leanback.widget.Presenter
@@ -34,7 +31,11 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.transvision.test.sampletv.tv.model.Coupon
 import com.transvision.tv.coupon.*
+import com.transvision.tv.coupon.extension.CustomRowPresenter
+import com.transvision.tv.coupon.extension.IconHeaderItem
+import com.transvision.tv.coupon.ui.coupon.CouponActivity
 
 /**
  * Loads a grid of cards with movies to browse.
@@ -89,33 +90,43 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun loadRows() {
-        val list = MovieList.list
+        val viewModel = MenuViewModel(context!!)
+        viewModel.loadData()
+        viewModel.browseCoupon.observe(viewLifecycleOwner) { list ->
 
-        val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
-        val cardPresenter = CardPresenter()
+            val rowsAdapter = ArrayObjectAdapter(CustomRowPresenter())
+            val cardPresenter = CardPresenter()
+            viewModel.listCategory.forEachIndexed { index, cate ->
+                val listRowAdapter = ArrayObjectAdapter(cardPresenter)
+                val listByCate = list.filter { it.categoryName == cate.categoryName }
+                if (listByCate.isNotEmpty()) {
+                    listByCate.forEach {
+                        listRowAdapter.add(it)
+                    }
 
-        for (i in 0 until NUM_ROWS) {
-            if (i != 0) {
-                Collections.shuffle(list)
+                    rowsAdapter.add(
+                        ListRow(
+                            IconHeaderItem(
+                                index.toLong(),
+                                cate.categoryName.toString()
+                            ), listRowAdapter
+                        )
+                    )
+                }
             }
-            val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-            for (j in 0 until NUM_COLS) {
-                listRowAdapter.add(list[j % 5])
-            }
-            val header = HeaderItem(i.toLong(), MovieList.MOVIE_CATEGORY[i])
-            rowsAdapter.add(ListRow(header, listRowAdapter))
+
+//            val gridHeader = HeaderItem(viewModel.listCategory.size.toLong(), "PREFERENCES")
+//
+//            val mGridPresenter = GridItemPresenter()
+//            val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
+//            gridRowAdapter.add(resources.getString(R.string.grid_view))
+//            gridRowAdapter.add(getString(R.string.error_fragment))
+//            gridRowAdapter.add(resources.getString(R.string.personal_settings))
+//            rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
+
+            adapter = rowsAdapter
+
         }
-
-        val gridHeader = HeaderItem(NUM_ROWS.toLong(), "PREFERENCES")
-
-        val mGridPresenter = GridItemPresenter()
-        val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
-        gridRowAdapter.add(resources.getString(R.string.grid_view))
-        gridRowAdapter.add(getString(R.string.error_fragment))
-        gridRowAdapter.add(resources.getString(R.string.personal_settings))
-        rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
-
-        adapter = rowsAdapter
     }
 
     private fun setupEventListeners() {
@@ -136,17 +147,15 @@ class MainFragment : BrowseSupportFragment() {
             row: Row
         ) {
 
-            if (item is Movie) {
-                Log.d(TAG, "Item: " + item.toString())
-                val intent = Intent(context!!, DetailsActivity::class.java)
-                intent.putExtra(DetailsActivity.MOVIE, item)
+            if (item is Coupon) {
+                val intent = Intent(context!!, CouponActivity::class.java)
+                intent.putExtra(CouponActivity.COUPON, item)
 
                 val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     activity!!,
                     (itemViewHolder.view as ImageCardView).mainImageView,
-                    DetailsActivity.SHARED_ELEMENT_NAME
-                )
-                    .toBundle()
+                    CouponActivity.COUPON_ACTIVITY
+                ).toBundle()
                 startActivity(intent, bundle)
             } else if (item is String) {
                 if (item.contains(getString(R.string.error_fragment))) {
@@ -164,9 +173,9 @@ class MainFragment : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
-            if (item is Movie) {
-                mBackgroundUri = item.backgroundImageUrl
-                startBackgroundTimer()
+            if (item is Coupon) {
+//                mBackgroundUri = item.icon
+//                startBackgroundTimer()
             }
         }
     }
@@ -228,7 +237,5 @@ class MainFragment : BrowseSupportFragment() {
         private val BACKGROUND_UPDATE_DELAY = 300
         private val GRID_ITEM_WIDTH = 200
         private val GRID_ITEM_HEIGHT = 200
-        private val NUM_ROWS = 6
-        private val NUM_COLS = 15
     }
 }

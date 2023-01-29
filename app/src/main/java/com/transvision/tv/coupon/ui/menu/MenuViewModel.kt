@@ -1,4 +1,4 @@
-package com.transvision.tv.coupon.ui.coupon
+package com.transvision.tv.coupon.ui.menu
 
 import android.content.Context
 import android.util.Log
@@ -14,8 +14,7 @@ import com.transvision.tv.coupon.service.connect
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
-class CouponViewModel(context: Context) : ViewModel() {
-
+class MenuViewModel(context: Context): ViewModel() {
     private lateinit var call: Single<CouponResponse>
     private lateinit var callCategory: Single<CategoryResponse>
     private val apiService: ApiService = connect(context)
@@ -64,5 +63,4 @@ class CouponViewModel(context: Context) : ViewModel() {
     companion object {
         const val LOG_CONNECTION: String = "CouponTrace"
     }
-
 }
