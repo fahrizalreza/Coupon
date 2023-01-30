@@ -32,12 +32,11 @@ class CardPresenter : Presenter() {
 
         val cardView = object : ImageCardView(parent.context) {
             override fun setSelected(selected: Boolean) {
-                infoVisibility = 1
                 updateCardBackgroundColor(this, selected)
                 super.setSelected(selected)
             }
         }
-        cardView.infoVisibility = 1
+        cardView.infoVisibility = 2
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
         updateCardBackgroundColor(cardView, false)
@@ -49,7 +48,6 @@ class CardPresenter : Presenter() {
         val cardView = viewHolder.view as ImageCardView
 
         Log.d(TAG, "onBindViewHolder")
-        cardView.infoVisibility = 1
         if (coupon.icon != null) {
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
             Glide.with(viewHolder.view.context)
@@ -64,7 +62,7 @@ class CardPresenter : Presenter() {
         Log.d(TAG, "onUnbindViewHolder")
         val cardView = viewHolder.view as ImageCardView
         // Remove references to images so that the garbage collector can free up memory
-        cardView.infoVisibility = 1
+        cardView.infoVisibility = 2
         cardView.badgeImage = null
         cardView.mainImage = null
     }
@@ -73,6 +71,7 @@ class CardPresenter : Presenter() {
 //        val color = if (selected) sSelectedBackgroundColor else sDefaultBackgroundColor
         // Both background colors should be set because the view"s background is temporarily visible
         // during animations.
+        view.infoVisibility = 2
 //        view.setBackgroundColor(color)
 //        view.setInfoAreaBackgroundColor(color)
     }

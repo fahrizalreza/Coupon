@@ -3,6 +3,7 @@ package com.transvision.tv.coupon.extension
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.RowHeaderPresenter
@@ -25,4 +26,10 @@ class CustomRowHeaderPresenter: RowHeaderPresenter() {
         textView?.text = iconHeaderItem?.name
     }
 
+}
+
+class CustomBrowse: BrowseSupportFragment(){
+    override fun showTitle(show: Boolean) {
+        super.showTitle(false)
+    }
 }
