@@ -1,15 +1,24 @@
 package com.transvision.tv.coupon.ui.menu
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.transvision.test.sampletv.tv.model.Coupon
 import com.transvision.tv.coupon.BrowseErrorActivity
 import com.transvision.tv.coupon.R
@@ -25,10 +34,12 @@ import java.util.*
 class MainFragment() : BrowseSupportFragment() {
 
     private val viewModel: MenuViewModel by inject()
+    private val mHandler = Handler(Looper.myLooper()!!)
     private lateinit var mBackgroundManager: BackgroundManager
     private var mDefaultBackground: Drawable? = null
     private lateinit var mMetrics: DisplayMetrics
     private var mBackgroundTimer: Timer? = null
+    private var mBackgroundUri: String? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -52,6 +63,7 @@ class MainFragment() : BrowseSupportFragment() {
 
         loadRows()
         onItemViewClickedListener = ItemViewClickedListener()
+        onItemViewSelectedListener = ItemViewSelectedListener()
     }
 
     override fun onDestroy() {
@@ -116,6 +128,79 @@ class MainFragment() : BrowseSupportFragment() {
                 }
             }
         }
+    }
+
+    private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
+        override fun onItemSelected(
+            itemViewHolder: Presenter.ViewHolder?, item: Any?,
+            rowViewHolder: RowPresenter.ViewHolder, row: Row
+        ) {
+////            if (item is Movie) {
+////                mBackgroundUri = item.backgroundImageUrl
+//                startBackgroundTimer()
+//            }
+        }
+    }
+
+    private fun updateBackground(uri: String?) {
+        val width = mMetrics.widthPixels
+        val height = mMetrics.heightPixels
+        Glide.with(requireContext())
+            .load(uri)
+            .centerCrop()
+            .error(mDefaultBackground)
+            .into<SimpleTarget<Drawable>>(
+                object : SimpleTarget<Drawable>(width, height) {
+                    override fun onResourceReady(
+                        drawable: Drawable,
+                        transition: Transition<in Drawable>?
+                    ) {
+                        mBackgroundManager.drawable = drawable
+                    }
+                })
+        mBackgroundTimer?.cancel()
+    }
+
+    private fun startBackgroundTimer() {
+        mBackgroundTimer?.cancel()
+        mBackgroundTimer = Timer()
+        mBackgroundTimer?.schedule(UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY.toLong())
+    }
+
+    private inner class UpdateBackgroundTask : TimerTask() {
+
+        override fun run() {
+            mHandler.post { updateBackground(mBackgroundUri) }
+        }
+    }
+
+    private inner class GridItemPresenter : Presenter() {
+        override fun onCreateViewHolder(parent: ViewGroup): Presenter.ViewHolder {
+            val view = TextView(parent.context)
+            view.layoutParams = ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT)
+            view.isFocusable = true
+            view.isFocusableInTouchMode = true
+            view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.default_background))
+            view.setTextColor(Color.WHITE)
+            view.gravity = Gravity.CENTER
+            return Presenter.ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
+            (viewHolder.view as TextView).text = item as String
+        }
+
+        override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {}
+    }
+
+    companion object {
+        private val TAG = "MenuFragment"
+
+        private val BACKGROUND_UPDATE_DELAY = 300
+        private val GRID_ITEM_WIDTH = 200
+        private val GRID_ITEM_HEIGHT = 200
+        private val NUM_ROWS = 6
+        private val NUM_COLS = 15
     }
 
 }

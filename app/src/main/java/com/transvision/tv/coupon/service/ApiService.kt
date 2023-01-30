@@ -4,6 +4,7 @@ import com.transvision.test.sampletv.tv.model.CategoryResponse
 import com.transvision.test.sampletv.tv.model.CouponResponse
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -14,4 +15,5 @@ interface ApiService {
     // coupon list
     @GET("getCoupon")
     fun loadCoupon(): Single<CouponResponse>
+
 }
