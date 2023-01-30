@@ -49,7 +49,8 @@ class MainFragment() : BrowseSupportFragment() {
     private fun initialize() {
         mBackgroundManager = BackgroundManager.getInstance(activity)
         mBackgroundManager.attach(requireActivity().window)
-        mDefaultBackground = ContextCompat.getDrawable(requireContext(), R.drawable.default_background)
+        mDefaultBackground =
+            ContextCompat.getDrawable(requireContext(), R.drawable.default_background)
         mMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(mMetrics)
 
@@ -97,7 +98,13 @@ class MainFragment() : BrowseSupportFragment() {
             adapter = rowsAdapter
 
             viewModel.errorResponse.observe(viewLifecycleOwner) { error ->
-                if (error == 1){
+                if (error == 1) {
+                    Toast.makeText(
+                        requireParentFragment().context,
+                        "Connection failure",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
                     val intent = Intent(requireContext(), BrowseErrorActivity::class.java)
                     startActivity(intent)
                 }
