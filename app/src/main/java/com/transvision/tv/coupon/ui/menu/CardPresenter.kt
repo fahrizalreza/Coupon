@@ -42,13 +42,14 @@ class CardPresenter : Presenter() {
 
         if (coupon.icon != null) {
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
-            cardView.setPadding(50,0,50,0)
-            Glide.with(viewHolder.view.context)
-                .load(coupon.icon)
-                .centerCrop()
-                .error(mDefaultCardImage)
-                .into(cardView.mainImageView)
+//            Glide.with(viewHolder.view.context)
+//                .load(coupon.icon)
+//                .centerCrop()
+//                .error(mDefaultCardImage)
+//                .into(cardView.mainImageView)
 
+            Picasso.get().load(coupon.icon).placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_placeholder).into(cardView.mainImageView)
         }
     }
 

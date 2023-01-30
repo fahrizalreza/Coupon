@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.transvision.test.sampletv.tv.model.Coupon
 import com.transvision.tv.coupon.BrowseErrorActivity
+import com.transvision.tv.coupon.ErrorFragment
 import com.transvision.tv.coupon.R
 import com.transvision.tv.coupon.extension.CustomRowPresenter
 import com.transvision.tv.coupon.extension.IconHeaderItem
@@ -34,12 +35,10 @@ import java.util.*
 class MainFragment() : BrowseSupportFragment() {
 
     private val viewModel: MenuViewModel by inject()
-    private val mHandler = Handler(Looper.myLooper()!!)
     private lateinit var mBackgroundManager: BackgroundManager
     private var mDefaultBackground: Drawable? = null
     private lateinit var mMetrics: DisplayMetrics
     private var mBackgroundTimer: Timer? = null
-    private var mBackgroundUri: String? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -63,7 +62,6 @@ class MainFragment() : BrowseSupportFragment() {
 
         loadRows()
         onItemViewClickedListener = ItemViewClickedListener()
-        onItemViewSelectedListener = ItemViewSelectedListener()
     }
 
     override fun onDestroy() {
@@ -98,6 +96,12 @@ class MainFragment() : BrowseSupportFragment() {
 
             adapter = rowsAdapter
 
+            viewModel.errorResponse.observe(viewLifecycleOwner) { error ->
+                if (error == 1){
+                    val intent = Intent(requireContext(), BrowseErrorActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
@@ -119,78 +123,8 @@ class MainFragment() : BrowseSupportFragment() {
                     CouponActivity.COUPON_ACTIVITY
                 ).toBundle()
                 startActivity(intent, bundle)
-            } else if (item is String) {
-                if (item.contains(getString(R.string.error_fragment))) {
-                    val intent = Intent(context!!, BrowseErrorActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(context!!, item, Toast.LENGTH_SHORT).show()
-                }
             }
         }
-    }
-
-    private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
-        override fun onItemSelected(
-            itemViewHolder: Presenter.ViewHolder?, item: Any?,
-            rowViewHolder: RowPresenter.ViewHolder, row: Row
-        ) {
-////            if (item is Movie) {
-////                mBackgroundUri = item.backgroundImageUrl
-//                startBackgroundTimer()
-//            }
-        }
-    }
-
-    private fun updateBackground(uri: String?) {
-        val width = mMetrics.widthPixels
-        val height = mMetrics.heightPixels
-        Glide.with(requireContext())
-            .load(uri)
-            .centerCrop()
-            .error(mDefaultBackground)
-            .into<SimpleTarget<Drawable>>(
-                object : SimpleTarget<Drawable>(width, height) {
-                    override fun onResourceReady(
-                        drawable: Drawable,
-                        transition: Transition<in Drawable>?
-                    ) {
-                        mBackgroundManager.drawable = drawable
-                    }
-                })
-        mBackgroundTimer?.cancel()
-    }
-
-    private fun startBackgroundTimer() {
-        mBackgroundTimer?.cancel()
-        mBackgroundTimer = Timer()
-        mBackgroundTimer?.schedule(UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY.toLong())
-    }
-
-    private inner class UpdateBackgroundTask : TimerTask() {
-
-        override fun run() {
-            mHandler.post { updateBackground(mBackgroundUri) }
-        }
-    }
-
-    private inner class GridItemPresenter : Presenter() {
-        override fun onCreateViewHolder(parent: ViewGroup): Presenter.ViewHolder {
-            val view = TextView(parent.context)
-            view.layoutParams = ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT)
-            view.isFocusable = true
-            view.isFocusableInTouchMode = true
-            view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.default_background))
-            view.setTextColor(Color.WHITE)
-            view.gravity = Gravity.CENTER
-            return Presenter.ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
-            (viewHolder.view as TextView).text = item as String
-        }
-
-        override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {}
     }
 
     companion object {

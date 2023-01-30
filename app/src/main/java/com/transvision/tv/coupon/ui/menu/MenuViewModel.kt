@@ -20,8 +20,10 @@ class MenuViewModel(private val apiService: ApiService,  context: Context): View
     private lateinit var list: List<Coupon>
     var listCategory: MutableList<Category> = mutableListOf()
     val browseCoupon = MutableLiveData<List<Coupon>>()
+    val errorResponse = MutableLiveData<Int>()
 
     fun loadData() {
+        errorResponse.value = 0
         callCategory = apiService.loadCategory()
         val disposable = callCategory.applySchedulers().subscribe({ result ->
             Log.d(LOG_CONNECTION, "connect to api master data = \n$result")
@@ -35,6 +37,7 @@ class MenuViewModel(private val apiService: ApiService,  context: Context): View
             Log.d(
                 LOG_CONNECTION, "error connection: ${error.message} "
             )
+            errorResponse.value = 1
 
         })
         compositeDisposable.add(disposable)
@@ -53,6 +56,7 @@ class MenuViewModel(private val apiService: ApiService,  context: Context): View
             Log.d(
                 LOG_CONNECTION, "error connection: ${error.message} "
             )
+            errorResponse.value = 1
 
         })
         compositeDisposable.add(disposable)

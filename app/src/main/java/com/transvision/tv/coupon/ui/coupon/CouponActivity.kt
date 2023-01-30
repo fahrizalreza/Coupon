@@ -27,7 +27,7 @@ class CouponActivity : FragmentActivity() {
 
         binding.tvTitle.text = selectedCoupon.brand
         binding.tvDesc.setText(Html.fromHtml(selectedCoupon.desc, Html.FROM_HTML_MODE_COMPACT))
-        Picasso.with(this).load(selectedCoupon.icon).fit().into(binding.ivCoupon)
+        Picasso.get().load(selectedCoupon.icon).fit().into(binding.ivCoupon)
         binding.ivCoupon.setColorFilter(
             ContextCompat.getColor(this, R.color.black),
             android.graphics.PorterDuff.Mode.DST_OVER
